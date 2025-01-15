@@ -1,0 +1,3 @@
+local g = game.PlaceId
+
+local e = g
