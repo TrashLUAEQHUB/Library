@@ -1,4 +1,9 @@
-warn("[ INFO ] : Script Are Loading")
+warn("[INFO] : Script is Loading...")
+
+-- Load the external Library via loadstring
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/TrashLUAEQHUB/Library/refs/heads/main/AutoUpdate/Loaded"))()
+
+-- Local player and GUI references
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
@@ -11,10 +16,9 @@ local TabButtonsHolder = Instance.new("Frame")
 local ScrollingFrame = Instance.new("ScrollingFrame")
 local TabsLayout = Instance.new("UIListLayout")
 local ContentLayout = Instance.new("UIListLayout")
---[ WHY SO SERIOUS ]--
---=[Properties]=--
+
+-- UI setup
 ScreenGui.Parent = game.CoreGui
-TitleLabel = Instance.new("TextLabel")
 ScreenGui.Name = "CustomUI"
 MainFrame.Size = UDim2.new(0, 400, 0, 300)
 MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
@@ -22,22 +26,29 @@ MainFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
 MainFrame.BorderSizePixel = 1
 MainFrame.BorderColor3 = Color3.new(0, 0, 1)
 MainFrame.Parent = ScreenGui
+
+-- Title Label setup
 TitleLabel.Size = UDim2.new(1, 0, 0, 30)
 TitleLabel.BackgroundColor3 = Color3.new(0.15, 0.15, 0.15)
-TitleLabel.Text = Library.Title  -- Use the title from Library
+TitleLabel.Text = Library.Title
 TitleLabel.TextColor3 = Color3.new(1, 1, 1)
 TitleLabel.TextSize = 13
 TitleLabel.Parent = MainFrame
+
+-- Tab holder setup
 TabHolder.Size = UDim2.new(1, 0, 0, 30)
 TabHolder.BackgroundColor3 = Color3.new(0.15, 0.15, 0.15)
 TabHolder.BorderSizePixel = 1
 TabHolder.BorderColor3 = Color3.new(0, 0, 1)
 TabHolder.Position = UDim2.new(0, 0, 0, 30)
 TabHolder.Parent = MainFrame
+
 TabButtonsHolder.Size = UDim2.new(1, -10, 1, -10)
 TabButtonsHolder.Position = UDim2.new(0, 5, 0, 5)
 TabButtonsHolder.BackgroundTransparency = 1
 TabButtonsHolder.Parent = TabHolder
+
+-- Scrolling Frame setup
 ScrollingFrame.Size = UDim2.new(1, 0, 1, -30)
 ScrollingFrame.Position = UDim2.new(0, 0, 0, 60)
 ScrollingFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
@@ -45,16 +56,19 @@ ScrollingFrame.BorderSizePixel = 1
 ScrollingFrame.BorderColor3 = Color3.new(0, 0, 1)
 ScrollingFrame.Parent = MainFrame
 ScrollingFrame.ScrollBarThickness = 10
+
+-- Layout setups
 TabsLayout.FillDirection = Enum.FillDirection.Horizontal
 TabsLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 TabsLayout.SortOrder = Enum.SortOrder.LayoutOrder
 TabsLayout.Parent = TabButtonsHolder
+
 ContentLayout.FillDirection = Enum.FillDirection.Vertical
 ContentLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 ContentLayout.SortOrder = Enum.SortOrder.LayoutOrder
 ContentLayout.Parent = ScrollingFrame
 
---=[Themes]=--
+-- Theme settings
 local Themes = {
     BloodTheme = {
         BackgroundColor = Color3.new(0.5, 0, 0),   -- Dark Red
@@ -82,22 +96,19 @@ local Themes = {
     }
 }
 
---=[Library Functions]=--
-
--- Create the Title with theme color
+-- Library functions (button, toggle, tab creation)
 function Library:CreateTitle()
     local theme = Themes[self.Theme]
-    TitleLabel.Text = self.Title  -- Use the title from Library
+    TitleLabel.Text = self.Title
     TitleLabel.BackgroundColor3 = theme.BackgroundColor
     TitleLabel.TextColor3 = theme.TextColor
     TitleLabel.BorderColor3 = theme.BorderColor
 end
 
--- Create a Button
 function Library:CreateButton(tab, buttonName, callback)
     local theme = Themes[self.Theme]
     local Button = Instance.new("TextButton")
-    Button.Size = UDim2.new(1, -10, 0, 40)  
+    Button.Size = UDim2.new(1, -10, 0, 40)
     Button.Text = buttonName
     Button.TextColor3 = theme.TextColor
     Button.BackgroundColor3 = theme.ButtonColor
@@ -111,7 +122,6 @@ function Library:CreateButton(tab, buttonName, callback)
     Button.MouseButton1Click:Connect(callback)
 end
 
--- Create a Tab
 function Library:CreateTab(tabName)
     local TabButton = Instance.new("TextButton")
     TabButton.Size = UDim2.new(0, 100, 1, 0)
@@ -138,7 +148,6 @@ function Library:CreateTab(tabName)
     return TabContent
 end
 
--- Create a Toggle
 function Library:CreateToggle(tab, ToggleName, callback)
     local theme = Themes[self.Theme]
     local Toggle = Instance.new("TextButton")
@@ -156,31 +165,21 @@ function Library:CreateToggle(tab, ToggleName, callback)
     Toggle.TextSize = 14
 
     Frame.Parent = Toggle
-    Frame.BackgroundColor3 = theme.ToggleOffColor  -- Initially set to OFF color
+    Frame.BackgroundColor3 = theme.ToggleOffColor
     Frame.BorderColor3 = theme.ToggleOffColor
     Frame.BorderSizePixel = 0
-    Frame.Size = UDim2.new(0, 400, 0, 3)  -- Set the frame size (it will be a small strip)
+    Frame.Size = UDim2.new(0, 400, 0, 3)
     
     local toggleCount = #tab:GetChildren() - 1
     Toggle.Position = UDim2.new(0, 0, 0, toggleCount * 55)
 
-    -- Update canvas size of the tab
-    local function updateCanvasSize()
-        game:GetService("TweenService"):Create(tab.Parent, TweenInfo.new(0.1), {
-            CanvasSize = UDim2.new(0, 0, 0, tab.UIListLayout.AbsoluteContentSize.Y)
-        }):Play()
-    end
-    Frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(updateCanvasSize)
-
-    local isOn = false  -- Initial state is OFF
+    local isOn = false
     local function toggleState()
         if isOn then
-            -- Switch to OFF state
             Frame.BackgroundColor3 = theme.ToggleOffColor
             Frame.BorderColor3 = theme.ToggleOffColor
             isOn = false
         else
-            -- Switch to ON state
             Frame.BackgroundColor3 = theme.ToggleOnColor
             Frame.BorderColor3 = theme.ToggleOnColor
             isOn = true
@@ -189,22 +188,16 @@ function Library:CreateToggle(tab, ToggleName, callback)
 
     Toggle.MouseButton1Click:Connect(function()
         if callback then
-            callback(isOn)  -- Call the callback with the current state
+            callback(isOn)
         end
-        toggleState()  -- Toggle the state
+        toggleState()
     end)
 end
 
--- Draggable UI Logic
+-- Draggable UI logic
 local dragToggle = false
-local dragSpeed = 0.1
 local dragStart = nil
 local starPos = nil
-local function updateInput(input)
-    local delta = input.Position - dragStart
-    local position = UDim2.new(starPos.X.Scale, starPos.X.Offset + delta.X, starPos.Y.Scale, starPos.Y.Offset + delta.Y)
-    game:GetService('TweenService'):Create(MainFrame, TweenInfo.new(dragSpeed), {Position = position}):Play()
-end
 
 TitleLabel.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -222,9 +215,12 @@ end)
 UIS.InputChanged:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseMovement then
         if dragToggle then
-            updateInput(input)
+            local delta = input.Position - dragStart
+            local position = UDim2.new(starPos.X.Scale, starPos.X.Offset + delta.X, starPos.Y.Scale, starPos.Y.Offset + delta.Y)
+            game:GetService('TweenService'):Create(MainFrame, TweenInfo.new(0.1), {Position = position}):Play()
         end
     end
 end)
+
+warn("[INFO] : Script Loaded!")
 return Library
-warn("[ INFO ] : Loaded!")
