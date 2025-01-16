@@ -1,0 +1,459 @@
+
+--[[
+
+   =====================
+  ==// Made by Eq Hub \\==
+  ==\\     v.1.6      //==
+   =====================
+
+
+--]]
+local Library = {}
+
+warn("[INFO] : Script is Loading...")
+wait(1 )
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+local UIS = game:GetService('UserInputService')
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local TitleLabel = Instance.new("TextLabel")
+local TabHolder = Instance.new("Frame")
+local TabButtonsHolder = Instance.new("Frame")
+local ScrollingFrame = Instance.new("ScrollingFrame")
+local TabsLayout = Instance.new("UIListLayout")
+local ContentLayout = Instance.new("UIListLayout")
+
+ScreenGui.Parent = game.CoreGui
+ScreenGui.Name = "CustomUI"
+MainFrame.Size = UDim2.new(0, 400, 0, 300)
+MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+MainFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
+MainFrame.BorderSizePixel = 1
+MainFrame.BorderColor3 = Color3.new(BorderColor)
+MainFrame.Parent = ScreenGui
+
+TitleLabel.Size = UDim2.new(1, 0, 0, 30)
+TitleLabel.BackgroundColor3 = Color3.new(0.15, 0.15, 0.15)
+TitleLabel.TextColor3 = Color3.new(1, 1, 1)
+TitleLabel.TextSize = 13
+TitleLabel.Parent = MainFrame
+
+TabHolder.Size = UDim2.new(1, 0, 0, 30)
+TabHolder.BackgroundColor3 = Color3.new(0.15, 0.15, 0.15)
+TabHolder.BorderSizePixel = 1
+TabHolder.BorderColor3 = Color3.new(BorderColor)
+TabHolder.Position = UDim2.new(0, 0, 0, 30)
+TabHolder.Parent = MainFrame
+
+TabButtonsHolder.Size = UDim2.new(1, -10, 1, -10)
+TabButtonsHolder.Position = UDim2.new(0, 5, 0, 5)
+TabButtonsHolder.BackgroundTransparency = 1
+TabButtonsHolder.Parent = TabHolder
+
+ScrollingFrame.Size = UDim2.new(1, 0, 1, -30)
+ScrollingFrame.Position = UDim2.new(0, 0, 0, 60)
+ScrollingFrame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+ScrollingFrame.BorderSizePixel = 1
+ScrollingFrame.BorderColor3 = Color3.new(BorderColor)
+ScrollingFrame.Parent = MainFrame
+ScrollingFrame.ScrollBarThickness = 10
+
+TabsLayout.FillDirection = Enum.FillDirection.Horizontal
+TabsLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+TabsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+TabsLayout.Parent = TabButtonsHolder
+
+ContentLayout.FillDirection = Enum.FillDirection.Vertical
+ContentLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+ContentLayout.SortOrder = Enum.SortOrder.LayoutOrder
+ContentLayout.Parent = ScrollingFrame
+
+local Themes = {
+    BloodTheme = {
+        BackgroundColor = Color3.new(0.5, 0, 0),   -- Dark Red
+        TextColor = Color3.new(1, 1, 1),             -- White
+        BorderColor = Color3.new(1, 0, 0),           -- Red
+        ButtonColor = Color3.new(0.6, 0, 0),         -- Darker Red for buttons
+        ToggleOnColor = Color3.new(1, 0, 0),         -- Green
+        ToggleOffColor = Color3.new(0.5, 0, 0),      -- Red
+        SectionBackgroundColor = Color3.new(0.3, 0, 0),  -- Dark Red for sections
+    },
+    GrapeTheme = {
+        BackgroundColor = Color3.new(0.5, 0, 0.5),   -- Purple
+        TextColor = Color3.new(1, 1, 1),              -- White
+        BorderColor = Color3.new(0.8, 0.4, 1),        -- Light Purple
+        ButtonColor = Color3.new(0.6, 0, 0.6),        -- Darker Purple for buttons
+        ToggleOnColor = Color3.new(0.5, 0.2, 1),      -- Blueish Purple
+        ToggleOffColor = Color3.new(0.5, 0, 0.5),     -- Dark Purple
+        SectionBackgroundColor = Color3.new(0.3, 0, 0.3), -- Dark Purple for sections
+    },
+    MidNightTheme = {
+        BackgroundColor = Color3.new(0.1, 0.1, 0.1), -- Very Dark Grey
+        TextColor = Color3.new(1, 1, 1),              -- White
+        BorderColor = Color3.new(0, 0, 1),            -- Blue
+        ButtonColor = Color3.new(0.5,0.5,0.5),        -- Dark Grey for buttons
+        ToggleOnColor = Color3.new(0, 1, 1),          -- Cyan
+        ToggleOffColor = Color3.new(0.1, 0.1, 0.1),   -- Dark Grey
+        SectionBackgroundColor = Color3.new(0.1, 0.1, 0.1), -- Dark Grey for section
+    },
+Light = {
+    BackgroundColor = Color3.new(0.9, 0.9, 0.9),         -- Light grey
+    TextColor = Color3.new(0, 0, 0),                     -- Black for text
+    BorderColor = Color3.new(0.8, 0.8, 0.8),             -- Light grey border
+    ButtonColor = Color3.new(0.7, 0.7, 0.7),             -- Slightly darker grey for buttons
+    ToggleOnColor = Color3.new(0, 1, 0),                 -- Green for toggle on
+    ToggleOffColor = Color3.new(0.5, 0.5, 0.5),          -- Grey for toggle off
+    SectionBackgroundColor = Color3.new(0.8, 0.8, 0.8),  -- Lighter grey for sections
+},
+
+Dark = {
+    BackgroundColor = Color3.new(0.1, 0.1, 0.1),         -- Dark grey
+    TextColor = Color3.new(1, 1, 1),                      -- White for text
+    BorderColor = Color3.new(0.2, 0.2, 0.2),             -- Darker grey border
+    ButtonColor = Color3.new(0.3, 0.3, 0.3),             -- Darker button color
+    ToggleOnColor = Color3.new(0, 1, 1),                  -- Cyan for toggle on
+    ToggleOffColor = Color3.new(0.1, 0.1, 0.1),           -- Dark grey for toggle off
+    SectionBackgroundColor = Color3.new(0.2, 0.2, 0.2),   -- Dark grey for sections
+},
+
+}
+
+
+function Library:CreateTitle(title, theme)
+    self.Title = title or "Default Title"
+    self.Theme = theme or "BloodTheme"
+    
+    local themeSettings = Themes[self.Theme]
+    TitleLabel.Text = self.Title
+    TitleLabel.BackgroundColor3 = themeSettings.BackgroundColor
+    TitleLabel.TextColor3 = themeSettings.TextColor
+    TitleLabel.BorderColor3 = themeSettings.BorderColor
+end
+function Library:CreateTab(tabName)
+    local Tab = Instance.new("Frame")
+    Tab.Size = UDim2.new(1, 0, 0, 200) -- Adjust height as needed
+    Tab.BackgroundTransparency = 1
+    Tab.Name = tabName
+    Tab.Parent = ScrollingFrame -- Parent to the scrolling frame
+
+    local TabButton = Instance.new("TextButton")
+    TabButton.Size = UDim2.new(0, 100, 1, 0)
+    TabButton.Text = tabName
+    TabButton.TextColor3 = Themes[self.Theme].TextColor
+    TabButton.BackgroundColor3 = Themes[self.Theme].BackgroundColor
+    TabButton.BorderColor3 = Themes[self.Theme].BorderColor
+    TabButton.Parent = TabButtonsHolder
+
+    TabButton.MouseButton1Click:Connect(function()
+        for _, child in ipairs(ScrollingFrame:GetChildren()) do
+            if child:IsA("Frame") then
+                child.Visible = false
+            end
+        end
+        Tab.Visible = true
+    end)
+
+    return Tab
+end
+
+
+
+
+function Library:CreateDropdown(tab, dropdownTitle, options, callback)
+    if type(options) ~= "table" then
+        warn("[INFO] : 'options' must be a table.")
+        options = {}
+    end
+
+    local theme = Themes[self.Theme]
+    if not theme then
+        warn("[ERROR] : Theme '" .. tostring(self.Theme) .. "' not found in Themes.")
+        return
+    end
+    if not theme.BackgroundColor or not theme.BorderColor then
+        warn("[ERROR] : Theme '" .. tostring(self.Theme) .. "' is missing color properties.")
+        return
+    end
+
+    local Dropdown = Instance.new("Frame")
+    local TextLabel = Instance.new("TextLabel")
+    local DropdownButton = Instance.new("TextButton")
+    local ScrollingFrame = Instance.new("ScrollingFrame")
+    local UIListLayout = Instance.new("UIListLayout")
+    local dropdownCount = #tab:GetChildren() - 1
+    Dropdown.Position = UDim2.new(0, 0, 0, dropdownCount * 55)
+    Dropdown.Name = "Dropdown"
+    Dropdown.Parent = tab
+    Dropdown.BackgroundColor3 = theme.BackgroundColor
+    Dropdown.BorderColor3 = theme.BorderColor
+    Dropdown.BorderSizePixel = 1
+    Dropdown.Size = UDim2.new(1, -10, 0, 50)
+    TextLabel.Parent = Dropdown
+    TextLabel.Size = UDim2.new(0.6, 0, 1, 0)
+    TextLabel.BackgroundTransparency = 1
+    TextLabel.Font = Enum.Font.SourceSansBold
+    TextLabel.Text = dropdownTitle
+    TextLabel.TextColor3 = Color3.new(1, 1, 1)
+    TextLabel.TextSize = 14
+    TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TextLabel.Position = UDim2.new(0.05, 0, 0, 0)
+    DropdownButton.Parent = Dropdown
+    DropdownButton.Size = UDim2.new(0.3, 0, 1, 0)
+    DropdownButton.Position = UDim2.new(0.7, 0, 0, 0)
+    DropdownButton.BackgroundColor3 = theme.BackgroundColor
+    DropdownButton.BorderColor3 = Color3.new(0, 0, 0)
+    DropdownButton.Text = "▼"
+    DropdownButton.TextColor3 = Color3.new(1, 1, 1)
+    DropdownButton.Font = Enum.Font.SourceSans
+    DropdownButton.TextSize = 14
+    ScrollingFrame.Parent = Dropdown
+    ScrollingFrame.Position = UDim2.new(0, 0, 1, 0)
+    ScrollingFrame.Size = UDim2.new(1, 0, 0, 0)
+    ScrollingFrame.BackgroundColor3 = theme.BackgroundColor
+    ScrollingFrame.BorderColor3 = Color3.new(0, 0, 0)
+    ScrollingFrame.ScrollBarThickness = 6
+    ScrollingFrame.Visible = false
+    ScrollingFrame.ClipsDescendants = true
+    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+
+    UIListLayout.Parent = ScrollingFrame
+    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    UIListLayout.Padding = UDim.new(0, 5)
+
+    local function updateCanvasSize()
+        ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 5)
+    end
+    UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvasSize)
+
+    for _, option in pairs(options) do
+        local OptionButton = Instance.new("TextButton")
+        OptionButton.Parent = ScrollingFrame
+        OptionButton.Size = UDim2.new(1, 0, 0, 30)
+        OptionButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+        OptionButton.BorderColor3 = Color3.new(0, 0, 0)
+        OptionButton.Font = Enum.Font.SourceSans
+        OptionButton.TextColor3 = Color3.new(1, 1, 1)
+        OptionButton.TextSize = 14
+        OptionButton.Text = option
+
+        OptionButton.MouseButton1Click:Connect(function()
+            pcall(function()
+                callback(option)
+            end)
+            DropdownButton.Text = option
+            ScrollingFrame.Visible = false
+        end)
+    end
+
+    DropdownButton.MouseButton1Click:Connect(function()
+        local optionCount = #options
+        local dropdownHeight = math.min(optionCount * 35, 150) 
+        ScrollingFrame.Visible = not ScrollingFrame.Visible
+        ScrollingFrame.Size = ScrollingFrame.Visible and UDim2.new(1, 0, 0, dropdownHeight) or UDim2.new(1, 0, 0, 0)
+    end)
+
+    return Dropdown
+end
+
+
+
+
+
+
+function Library:CreateButton(tab, buttonName, callback)
+    local theme = Themes[self.Theme]
+    local Button = Instance.new("TextButton")
+    Button.Size = UDim2.new(1, -10, 0, 40)
+    Button.Text = buttonName
+    Button.TextColor3 = theme.TextColor
+    Button.BackgroundColor3 = theme.BackgroundColor
+    Button.BorderSizePixel = 1
+    Button.BorderColor3 = theme.BorderColor
+    Button.Parent = tab
+
+    local buttonCount = #tab:GetChildren() - 1
+    Button.Position = UDim2.new(0, 0, 0, buttonCount * 55)
+
+    Button.MouseButton1Click:Connect(callback)
+end
+
+function Library:CreateSection(tab, secName)
+    local theme = Themes[self.Theme]
+    local Section = Instance.new("TextLabel")
+    Section.Size = UDim2.new(1, -10, 0, 40)
+    Section.Text = secName
+    Section.Font = Enum.Font.SourceSansBold  
+    Section.TextSize = 18 
+    Section.TextColor3 = theme.TextColor
+    Section.BackgroundColor3 = theme.SectionBackgroundColor
+    Section.BorderSizePixel = 1
+    Section.BorderColor3 = theme.BorderColor
+    Section.Parent = tab
+
+    local sectionCount = #tab:GetChildren() - 1
+    Section.Position = UDim2.new(0, 0, 0, sectionCount * 55)
+end
+
+function Library:CreateFolder(tab, fName)
+    local theme = Themes[self.Theme]
+
+
+    local Folder = Instance.new("TextLabel")
+    Folder.Size = UDim2.new(1, 10, 0, 40)
+	Folder.BackgroundTransparency = 1
+    Folder.Text = fName
+    Folder.Font = Enum.Font.SourceSansBold
+    Folder.TextSize = 25
+	Folder.TextXAlignment = Enum.TextXAlignment.Left
+    Folder.TextColor3 = theme.TextColor
+    Folder.BackgroundColor3 = theme.SectionBackgroundColor or Color3.new(0.2, 0.2, 0.2)
+    Folder.BorderSizePixel = 1
+    Folder.BorderColor3 = theme.BorderColor or Color3.new(1, 1, 1)
+    Folder.Parent = tab
+
+    local folderCount = #tab:GetChildren() - 1
+    Folder.Position = UDim2.new(0, 0, 0, folderCount * 55)
+
+  
+end
+
+function Library:CreateInput(tab, text, Placeholder, callback)
+    local theme = Themes[self.Theme]
+    local Input = Instance.new("Frame")
+    local InputLabel = Instance.new("TextLabel")
+    local TextBox = Instance.new("TextBox")
+
+    Input.Name = "Input"
+    Input.Parent = tab
+    Input.BackgroundColor3 = theme.BackgroundColor
+    Input.BorderColor3 = theme.BorderColor
+    Input.BorderSizePixel = 1
+    Input.Size = UDim2.new(1, -10, 0, 40) -- Match Toggle size
+
+    local inputCount = #tab:GetChildren() - 1
+    Input.Position = UDim2.new(0, 0, 0, inputCount * 55)
+
+    InputLabel.Name = "InputLabel"
+    InputLabel.Parent = Input
+    InputLabel.BackgroundColor3 = theme.BackgroundColor
+    InputLabel.BackgroundTransparency = 1
+    InputLabel.BorderSizePixel = 0
+    InputLabel.Position = UDim2.new(0.03, 0, 0, 0)
+    InputLabel.Size = UDim2.new(0.6, 0, 1, 0) 
+    InputLabel.Font = Enum.Font.SourceSansBold
+    InputLabel.Text = text
+    InputLabel.TextColor3 = theme.TextColor
+    InputLabel.TextSize = 14
+    InputLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+    TextBox.Name = "TextBox"
+    TextBox.Parent = Input
+    TextBox.BackgroundColor3 = theme.ButtonColor
+    TextBox.BorderColor3 = theme.BorderColor
+    TextBox.BorderSizePixel = 1
+    TextBox.Position = UDim2.new(0.65, 0, 0.1, 0) 
+    TextBox.Size = UDim2.new(0.3, 0, 0.8, 0) 
+    TextBox.ClearTextOnFocus = false
+    TextBox.Font = Enum.Font.SourceSansBold
+    TextBox.PlaceholderColor3 = Color3.new(0.8, 0.8, 0.8)
+    TextBox.PlaceholderText = Placeholder
+    TextBox.Text = ""
+    TextBox.TextColor3 = theme.TextColor
+    TextBox.TextSize = 20 
+    TextBox:GetPropertyChangedSignal("Text"):Connect(function()
+        if callback then
+            callback(TextBox.Text)
+        end
+    end)
+
+    TextBox.FocusLost:Connect(function(enterPressed)
+        if callback then
+            callback(TextBox.Text, enterPressed)
+        end
+    end)
+end
+
+
+
+
+
+
+
+function Library:CreateToggle(tab, ToggleName, callback)
+    local theme = Themes[self.Theme]
+    local Toggle = Instance.new("TextButton")
+    local Frame = Instance.new("Frame")
+    
+    Toggle.Name = "Toggle"
+    Toggle.Parent = tab
+    Toggle.BackgroundColor3 = theme.BackgroundColor
+    Toggle.BorderColor3 = theme.BorderColor
+    Toggle.BorderSizePixel = 0
+    Toggle.Size = UDim2.new(1, -10, 0, 40)
+    Toggle.Font = Enum.Font.SourceSans
+    Toggle.Text = ToggleName
+    Toggle.TextColor3 = theme.TextColor
+    Toggle.TextSize = 14
+
+    Frame.Parent = Toggle
+    Frame.BackgroundColor3 = theme.ToggleOffColor
+    Frame.BorderColor3 = theme.ToggleOffColor
+    Frame.BorderSizePixel = 0
+    Frame.Size = UDim2.new(0, 400, 0, 3)
+    
+    local toggleCount = #tab:GetChildren() - 1
+    Toggle.Position = UDim2.new(0, 0, 0, toggleCount * 55)
+
+    local isOn = false
+    local function toggleState()
+        if isOn then
+            Frame.BackgroundColor3 = theme.ToggleOffColor
+            Frame.BorderColor3 = theme.ToggleOffColor
+            isOn = false
+        else
+            Frame.BackgroundColor3 = theme.ToggleOnColor
+            Frame.BorderColor3 = theme.ToggleOnColor
+            isOn = true
+        end
+    end
+
+    Toggle.MouseButton1Click:Connect(function()
+        if callback then
+            callback(isOn)
+        end
+        toggleState()
+    end)
+end
+
+local dragToggle = false
+local dragStart = nil
+local starPos = nil
+
+TitleLabel.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragToggle = true
+        dragStart = input.Position
+        starPos = MainFrame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragToggle = false
+            end
+        end)
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        if dragToggle then
+            local delta = input.Position - dragStart
+            local position = UDim2.new(starPos.X.Scale, starPos.X.Offset + delta.X, starPos.Y.Scale, starPos.Y.Offset + delta.Y)
+            game:GetService('TweenService'):Create(MainFrame, TweenInfo.new(0.1), {Position = position}):Play()
+        end
+    end
+end)
+
+warn("[INFO] : Script Loaded!")
+return Library
